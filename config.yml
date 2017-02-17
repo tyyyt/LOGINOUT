@@ -1,0 +1,26 @@
+#数据库配置
+#数据库IP(用户信息)
+dbip: 10.0.6.14
+#数据库端口
+dbport: 3306
+#数据库库名
+dbname: cop_c
+# 数据库用户
+dbuser: root
+# 数据库密码
+dbpasswd: 123456
+
+# gopkey
+gopkey: ''
+# 数据库配置（服务器信息）
+ser_dbip: 10.0.6.15
+ser_dbport: 3306
+ser_dbname: db_gcc
+ser_dbuser: root
+ser_dbpasswd: 123456
+
+#cop端口
+cop_port: 50000
+# 服务器gop端口
+
+gop_port: 63333

@@ -4,16 +4,48 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('kk:server');
-var http = require('http');
+const app = require('../app');
+const debug = require('debug')('kk:server');
+const http = require('http');
+const fs = require('fs')
+const request = require('request');
+const cmdlib = require('../cmd-lib');
+const YAML = require('yamljs');
+const config = YAML.parse(fs.readFileSync('../config.yml').toString());
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+// var port = normalizePort(process.env.PORT || '3000');
+const port = config.cop_port;
+const gop_port = config.gop_port;
 app.set('port', port);
+let server_sql = 'select GAME_HOST from t_game_config_variable_copy';
+cmdlib.run_sql(config.ser_dbip, config.ser_dbuser, config.ser_dbpasswd, config.ser_dbport, config.ser_dbname, server_sql, 'select', function(r) {
+    for (var i = 0; i < r.length; i++) {
+        var server = r[i].GAME_HOST;
+        request.post({
+            url: 'http://' + r[i].GAME_HOST + ':' + gop_port + '/',
+
+            form: {
+                cmd: 10086
+            }
+
+        }, function(err, httpResponse, body) {
+            if (err) {
+                console.log(err);
+                return 1;
+            }
+            if (JSON.parse(body).repo == 'success') {
+                console.log(server + 'can visit');
+            } else {
+                console.log(server + 'can not  connect');
+            }
+        })
+
+    }
+});
 
 /**
  * Create HTTP server.
@@ -34,19 +66,19 @@ server.on('listening', onListening);
  */
 
 function normalizePort(val) {
-  var port = parseInt(val, 10);
+    var port = parseInt(val, 10);
 
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
+    if (isNaN(port)) {
+        // named pipe
+        return val;
+    }
 
-  if (port >= 0) {
-    // port number
-    return port;
-  }
+    if (port >= 0) {
+        // port number
+        return port;
+    }
 
-  return false;
+    return false;
 }
 
 /**
@@ -54,27 +86,27 @@ function normalizePort(val) {
  */
 
 function onError(error) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
+    if (error.syscall !== 'listen') {
+        throw error;
+    }
 
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
+    var bind = typeof port === 'string'
+        ? 'Pipe ' + port
+        : 'Port ' + port;
 
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
+    // handle specific listen errors with friendly messages
+    switch (error.code) {
+        case 'EACCES':
+            console.error(bind + ' requires elevated privileges');
+            process.exit(1);
+            break;
+        case 'EADDRINUSE':
+            console.error(bind + ' is already in use');
+            process.exit(1);
+            break;
+        default:
+            throw error;
+    }
 }
 
 /**
@@ -82,9 +114,9 @@ function onError(error) {
  */
 
 function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+    var addr = server.address();
+    var bind = typeof addr === 'string'
+        ? 'pipe ' + addr
+        : 'port ' + addr.port;
+    debug('Listening on ' + bind);
 }

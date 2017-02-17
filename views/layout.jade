@@ -1,9 +1,19 @@
 doctype html
 html
   head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-    script(src='/javascripts/jquery.min.js')
-    script(src='/javascripts/sendinfo.js')
+    title #{head}
+    script(src='/js/md5-min.js')
+    script(src='/js/react.js')
+    script(src='/js/react-dom.js')
+    script(src='/js/jquery.min.js')
+    script(src='/js/browser.min.js')
+    script(src='/js/bootstrap.min.js')
+    script(src='/js/flat-ui.min.js')
+    script(src='/js/bootstrap-datetimepicker.min.js')
+    script(src='/js/bootstrap-datetimepicker.zh-CN.js')
+    link(rel='stylesheet', href='/css/css.css')
+    link(rel='stylesheet', href='/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/css/flat-ui.min.css')
   body
     block content

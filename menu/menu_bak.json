@@ -1,0 +1,60 @@
+[{
+    "head_id": "head1",
+    "collapse_id": "coll1",
+    "title": "版本控制",
+    "body": [
+      ["1","/showpage?s=11", "策划配置版本"],
+      ["2","/showpage?s=12", "服务端版本"],
+      ["3","/showpage?s=13", "客户端版本"],
+      ["4","/showpage?s=14", "版本比较"]
+    ]
+}, {
+    "head_id": "head2",
+    "collapse_id": "coll2",
+    "title": "服务器管理",
+    "body": [
+        ["1","/showpage?s=21", "关闭/开启服务器"],
+        ["2","/showpage?s=22", "服务器日志"],
+        ["3","/showpage?s=23", "服务器状态"],
+        ["4","/showpage?s=24", "入口管理"]
+    ]
+}, {
+    "head_id": "head3",
+    "collapse_id": "coll3",
+    "title": "执行中心",
+    "body": [
+        ["1","/showpage?s=31", "sql命令执行"],
+        ["2","/showpage?s=32", "shell命令执行"]
+    ]
+}, {
+    "head_id": "head4",
+    "collapse_id": "coll4",
+    "title": "更新管理",
+    "body": [
+        ["1","/showpage?s=41", "服务端文件更新"],
+        ["2","/showpage?s=42", "服务端热更"],
+        ["3","/showpage?s=43", "策划配置管理"]
+    ]
+}, {
+    "head_id": "head5",
+    "collapse_id": "coll5",
+    "title": "信息中心",
+    "body": [
+        ["1","/showpage?s=51", "服务器信息管理"],
+        ["2","/showpage?s=52", "区服信息管理"],
+        ["3","/showpage?s=53", "平台信息管理"],
+        ["4","/showpage?s=54", "key信息管理"]
+    ]
+}, {
+    "head_id": "head6",
+    "collapse_id": "coll6",
+    "title": "后台相关",
+    "body": [
+        ["1","/showpage?s=61", "用户管理"],
+        ["2","/showpage?s=62", "后台登录IP管理"],
+        ["3","/showpage?s=63", "支付访问IP管理"],
+        ["4","/showpage?s=64", "查询后台操作日志"],
+        ["5","/showpage?s=65", "密码修改"],
+        ["6","/logout", "退出登录"]
+    ]
+}]

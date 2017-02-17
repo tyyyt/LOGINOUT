@@ -1,14 +1,23 @@
 extends layout
 
 block content
+  script(src='/js/md5.js')
+  script(src='/funjs/sendinfo.js')
   .container
     h1 #{error}
     h1 #{success}
-    form.form-signin(method="post", action="/login")
-      h2 请登陆
-      .form-group
-        label.sr-only 用户名
-        input.form-control#inputUser(placeholder="用户名", name="user", required, autofocus )
-        label.sr-only 密码
-        input.form-control#inputPassword(placeholder="密码", name="passwd",type="password" required, autofocus)
-      button.btn.btn-lg.btn-primary.btn-block(type="submit") Sign in
+    .col-md-4
+    .col-md-4  
+      form.form-signin
+        h2.text-center 请登陆
+        .form-group
+          label.sr-only 用户名
+          input.form-control#inputUser(placeholder="用户名", name="user", required, autofocus )
+          label.sr-only 密码
+          input.form-control#inputPassword(placeholder="密码", name="passwd",type="password" required, autofocus)
+          select.form-control#inputSelect(name="lan")
+            var list = #{list}
+            each val in list
+              option #{val}
+        button.btn.btn-large.btn-block.btn-primary(type="button",onclick="sendinfo()") Sign in
+        

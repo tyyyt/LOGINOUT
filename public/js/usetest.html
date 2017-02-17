@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>REACT测试</title>
+    <script src="react.js"></script>
+    <script src="react-dom.js"></script>
+    <script src="https://cdn.static.runoob.com/libs/jquery/1.10.2/jquery.min.js">
+    <script src="browser.min.js"></script>
+  </head>
+  <body>
+    <div id="example"></div>
+    <script type="text/javascript">
+
+    (function myFunction(){
+    	setInterval(function(){
+        document.getElementById("tmshow").innerHTML=new Date();
+      },1000);
+    })()
+    </script>
+    <div id="tmshow">
+    </div>
+  </body>
+</html>

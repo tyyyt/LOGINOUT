@@ -1,8 +1,11 @@
 extends layout
 
 block content
-  h1 #{showname} 
-  h1 #{success}
-  h1 #{error}
-  a(href='/logout')登出
-  p 这是主页
+    .row
+        #head.col-md-12
+        h4.text-center #{showname}
+        #menu.col-md-2.col-xs-2.col-sm-2
+        #show.col-md-10.col-xs-10.col-sm-10
+        script(type='text/babel', src='/jsx/menu.jsx')
+        script(type='text/babel', id="mainjsx", src='#{jsxfile}')
+      

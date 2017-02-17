@@ -1,0 +1,54 @@
+[{
+    "id": "100",
+    "title":"Version Control",
+    "menu": [
+        "Development Tools",
+        "Adjust Server Time",
+        "Client Version",
+        "Version Comparison"
+    ]
+}, {
+    "id":"200",
+    "title":"Server Management",
+    "menu": [
+        "Stop/Start Server",
+        "Server Log",
+        "Server Status",
+        "Entry Management"
+    ]
+}, {
+    "id":"300",
+    "title":"Executive Center",
+    "menu": [
+        "SQL Command",
+        "SEHLL Command"
+    ]
+}, {
+   "id":"400",
+   "title":"Update Canagement",
+    "menu": [
+        "Update Server File",
+        "Server Hot Update",
+        "Please Select The Time"
+    ]
+}, {
+    "id":"500",
+      "title":"Information Centre",
+    "menu": [
+        "Server Info",
+        "District Service Info",
+        "Platform Info"
+    ]
+}, {
+    "id":"600",
+    "title":"Information Centre",
+    "menu": [
+        "User Management",
+        "KEY Info",
+        "Login IP Management",
+        "pay IP Management",
+        "Operation Log",
+        "Change Password",
+        "Logout"
+    ]
+}]
