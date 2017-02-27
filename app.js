@@ -33,6 +33,15 @@ app.use(session({
     //url: 'mongodb://localhost:27017/kk'// mongodb 地址
     //})
 }));
+
+app.all('*', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.header("Access-Control-Allow-Methods","POST,GET");
+    // res.header("X-Powered-By",' 3.2.1');
+    next();
+});
+
 app.use(function(req, res, next) {
     res.locals.user = req.session.user;
     res.locals.showname = req.session.showname;

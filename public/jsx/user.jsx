@@ -1,6 +1,6 @@
 /**
- * cop user
- * @authors Orz
+ * cop user management(用户管理)
+ * @authors Orz&jkk
  */
 
 // ajax sync
@@ -27,7 +27,7 @@ var User = React.createClass({
         $('#addu').modal('show');
     },
     allper: function() {
-        var checkboxs = document.getElementsByName('mennu');
+        var checkboxs = document.getElementsByName('per');
         for (var i = 0; i < checkboxs.length; i++) {
             var e = checkboxs[i];
             e.checked = !e.checked;
@@ -82,13 +82,14 @@ var User = React.createClass({
 
     AddUser: function() {
         var user_menu = [];
-        $('input[name = "mennu"]:checked').each(function() {
+        $('input[name = "per"]:checked').each(function() {
             user_menu.push($(this).val());
         });
         var username = $('#adduser').val();
         var showname = $('#addname').val();
         var passwd = $('#addpwd').val();
         var key = $('#addkey').val();
+        console.log(user_menu);
         if (username == "" || showname == "" || passwd == "" || key == "") {
             $('#opMsg').text('请将信息填写完整');
             $('#fos').modal('show');
@@ -99,7 +100,7 @@ var User = React.createClass({
                 showname: showname,
                 passwd: hex_md5(passwd),
                 key: key,
-                per: user_menu
+                per: user_menu.join(',')
             }, function(data, status) {
                 if (data.status == "yes") {
                     $('#addu').modal('hide');
@@ -175,7 +176,7 @@ var User = React.createClass({
             }
         }).error(function() {
             $('#chau').modal('hide');
-            $('#opMsg').text('请求时间超时');
+            $('#opMsg').text('请求时间超时');l
             $('#fos').modal('show');
         });
     },
@@ -185,9 +186,13 @@ var User = React.createClass({
         $('input[name="users"]:checked').each(function() {
             chk_value.push($(this).val());
         });
+        var user_menu = [];
+        $('input[name = "chper"]:checked').each(function() {
+            user_menu.push($(this).val());
+        });
         $.post("/cmd", {
             _cmd: 5,
-            per: $('#chaper').val(),
+            per: user_menu.join(','),
             peruser: chk_value.join(',')
         }, function(data, status) {
             if (data.status == "yes") {
@@ -243,12 +248,11 @@ var User = React.createClass({
                         <td>{repo.id}</td>
                         <td>{repo.username}</td>
                         <td>{repo.showname}</td>
-                        <td><input type="checkbox" name="users" title={repo.showname} id={repo.id} value={LangPackage.menu[repo.id]}/></td>
+                        <td><input type="checkbox" name="users" title={repo.showname} id={repo.id} value={repo.id}/></td>
                     </tr>
                 );
             });
             var xx = this.allmenu();
-            console.log(xx);
             var perName = xx.map(function(data) {
                 return (
                   <div key={data}>
@@ -275,7 +279,6 @@ var User = React.createClass({
                                 <td>ID</td>
                                 <td>用户名</td>
                                 <td>使用者</td>
-                                <td>权限组</td>
                                 <td>操作</td>
                             </tr>
                         </thead>

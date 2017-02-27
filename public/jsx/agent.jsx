@@ -1,18 +1,18 @@
 /**
- * cop user
- * @authors Orz
+ * cop the page of agent(平台信息管理)
+ * @authors Orz&jkk
  */
 
 // ajax sync
 $.ajaxSettings.async = false;
 var res;
 
-var User = React.createClass({
+var Agent = React.createClass({
     getInitialState: function() {
         return {
-            userloading: true,
-            usererror: null,
-            userdata: null,
+            agentloading: true,
+            agenterror: null,
+            agentdata: null,
             langloading: true,
             langerror: null,
             langdata: null
@@ -21,7 +21,7 @@ var User = React.createClass({
 
     componentDidMount() {
         this.props.langpackage.then(value => this.setState({langloading: false, langdata: value}), error => this.setState({langloading: false, langerror: error}));
-        this.props.userpage.then(value => this.setState({userloading: false, userdata: value}), error => this.setState({userloading: false, usererror: error}));
+        this.props.agentpage.then(value => this.setState({agentloading: false, agentdata: value}), error => this.setState({agentloading: false, agenterror: error}));
     },
     ShowAddUser: function() {
         $('#addu').modal('show');
@@ -72,7 +72,7 @@ delagent:function(){
     $.getJSON(getData('8'), function(result) {
         res = result;
     });
-    this.setState({userdata: res});
+    this.setState({agentdata: res});
 },
  showaddagent:function(){
      $("#agentaddd").modal('show');
@@ -109,7 +109,7 @@ modifyagent:function(){
     $.getJSON(getData('8'), function(result) {
         res = result;
     });
-    this.setState({userdata: res});
+    this.setState({agentdata: res});
 },
 addagent:function(){
     $("#agentaddd").modal('hide');
@@ -140,23 +140,22 @@ addagent:function(){
     $.getJSON(getData('8'), function(result) {
         res = result;
     });
-    this.setState({userdata: res});
+    this.setState({agentdata: res});
 },
     render: function() {
-        if (this.state.userloading || this.state.langloading) {
+        if (this.state.agentloading || this.state.langloading) {
             return (<img src="/images/show_loading.gif" alt="Loading Menu" className="img-responsive img-rounded center-block"/>);
-        } else if (this.state.usererror !== null) {
+        } else if (this.state.agenterror !== null) {
             return (
-                <span>Error: {this.state.usererror}</span>
+                <span>Error: {this.state.agenterror}</span>
             );
         } else if (this.state.langerror !== null) {
             return (
                 <span>Error: {this.state.langerror}</span>
             );
         } else {
-            var repos = this.state.userdata;
+            var repos = this.state.agentdata;
             var LangPackage = this.state.langdata;
-            var menu = this.state.userdata.menu;
             var o = this;
             var userpage = repos.map(function(repo) {
                 return (
@@ -165,8 +164,8 @@ addagent:function(){
                         <td>{repo.login_key}</td>
                         <td>{repo.charge_key}</td>
                         <td>{repo.default_login_key}</td>
-                        <td><input type="button" name="agent"  id={repo.agent} onClick={o.showmodi.bind(null,repo.agent)} value="修改"/>
-                            <input type="button" name="agent"  id={repo.agent} onClick={o.showdel.bind(null,repo.agent)} value="删除"/></td>
+                        <td><input type="button" className="btn btn-default" name="agent"  id={repo.agent} onClick={o.showmodi.bind(null,repo.agent)} value="修改"/>
+                            <input type="button" className="btn btn-danger" name="agent"  id={repo.agent} onClick={o.showdel.bind(null,repo.agent)} value="删除"/></td>
                     </tr>
                 );
             });
@@ -311,4 +310,4 @@ function getData(data) {
 }
 
 ReactDOM.render(
-    <User userpage={$.getJSON(getData('8'))} langpackage={$.getJSON(getData('6'))}/>, document.getElementById('show'));
+    <Agent agentpage={$.getJSON(getData('8'))} langpackage={$.getJSON(getData('6'))}/>, document.getElementById('show'));

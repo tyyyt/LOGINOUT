@@ -12,6 +12,7 @@ dbpasswd: 123456
 
 # gopkey
 gopkey: ''
+
 # 数据库配置（服务器信息）
 ser_dbip: 10.0.6.15
 ser_dbport: 3306

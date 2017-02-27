@@ -1,19 +1,19 @@
 /**
- * cop user
- * @authors Orz
+ * cop the page of limitip(后台登录IP限制)
+ * @authors Orz&jkk
  */
 
  // ajax sync
 $.ajaxSettings.async = false;
 var res;
 
-var User = React.createClass({
+var Iplimit = React.createClass({
     getInitialState: function() {
-        return {userloading: true, usererror: null, userdata: null};
+        return {iploading: true, iperror: null, ipdata: null};
     },
 
     componentDidMount() {
-        this.props.userpage.then(value => this.setState({userloading: false, userdata: value}), error => this.setState({userloading: false, usererror: error}));
+        this.props.limitpage.then(value => this.setState({iploading: false, ipdata: value}), error => this.setState({iploading: false, iperror: error}));
     },
 
     showadd: function() {
@@ -50,7 +50,7 @@ var User = React.createClass({
       $.getJSON(getData('5'), function(result){
         res = result;
       });
-      this.setState({userdata: res});
+      this.setState({ipdata: res});
     },
 
    delip: function(){
@@ -80,7 +80,7 @@ var User = React.createClass({
        $.getJSON(getData('5'), function(result){
          res = result;
        });
-       this.setState({userdata: res});
+       this.setState({ipdata: res});
      }else{
        $('#opMsg').text('请选择要删除的IP');
        $('#fos').modal('show');
@@ -88,16 +88,16 @@ var User = React.createClass({
    },
 
     render: function() {
-        if (this.state.userloading) {
+        if (this.state.iploading) {
             return (
                 <img src="/images/show_loading.gif" alt="Loading Menu" className="img-responsive img-rounded center-block"/>
             );
-        } else if (this.state.usererror !== null) {
+        } else if (this.state.iperror !== null) {
             return (
                 <span>Error:error</span>
             );
         } else {
-            var repos = this.state.userdata;
+            var repos = this.state.ipdata;
             var userpage = repos.map(function(repo) {
                 return (
                     <tr key={repo.id}>
@@ -194,4 +194,4 @@ function getData(data) {
 }
 
 ReactDOM.render(
-    <User userpage={$.getJSON(getData('5'))} />, document.getElementById('show'));
+    <Iplimit limitpage={$.getJSON(getData('5'))} />, document.getElementById('show'));

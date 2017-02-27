@@ -1,4 +1,8 @@
-var Shutdown = React.createClass({
+/**
+ * cop the page of change password(修改密码页面)
+ * @authors Orz&jkk
+ */
+var Changepd = React.createClass({
     chpd: function () {
         let oldpass = $("#oldpass").val();
         let newone = $("#newone").val();
@@ -91,4 +95,4 @@ function GetQueryString(name) {
 }
 
 ReactDOM.render(
-    <Shutdown/>, document.getElementById('show'));
+    <Changepd/>, document.getElementById('show'));

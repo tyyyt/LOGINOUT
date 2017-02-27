@@ -1,9 +1,14 @@
 /** 获取数据
- * 1 菜单控制
- * 2 服务器时间戳
- * 3 获取游戏服信息
- * 4 获取语言包
- * 5 获取全部当前开服时间
+ * 1 *
+ * 2 获取用户信息
+ * 3 获取agent
+ * 4 获取区服信息1
+ * 5 获取登录ip
+ * 6 获取语言包
+ * 7 获取区服信息2
+ * 8 获取平台信息
+ * 9 获取策划配置
+ * 10 获取客户端URL
  */
 const express = require('express');
 const router = express.Router();
@@ -12,28 +17,26 @@ const md5 = require('md5');
 const cmdlib = require('../cmd-lib');
 const YAML = require('yamljs');
 const config = YAML.parse(fs.readFileSync('../config.yml').toString());
-router.get('/', function(req, res, next) {
-    if (req.query.key != md5(req.query.tm)) {
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: {}
-        });
-        console.error('error : err key');
-        res.send('');
-        return 1;
-    }
-    if (req.session.lan == "Chinese") {
-        var  lanfile = "Chinese.json";
-    }
-    if (req.session.lan == "English") {
-        var  lanfile = "English.json";
-    }
-    var lan = JSON.parse(fs.readFileSync(__dirname + '/../lang/' + lanfile));
+const game_config = 't_game_config_variable_copy';
 
+router.get('/', function(req, res, next) {
+    // if (req.query.key != md5(req.query.tm)) {
+    //     res.status(err.status || 500);
+    //     res.render('error', {
+    //         message: err.message,
+    //         error: {}
+    //     });
+    //     console.error('error : err key');
+    //     res.send('');
+    //     return 1;
+    // }
+    var  lanfile = req.session.lan + '.json';
+    var lan = JSON.parse(fs.readFileSync(__dirname + '/../lang/' + lanfile));
+    console.log(req.query.case);
 switch (Number(req.query.case)) {
     case 1:
     var username = req.session.user;
+    console.log('username ==================>' + username);
     var sql = 'select permissions from o_users where username="' + username + '"';
         cmdlib.run_sql(config.dbip, config.dbuser, config.dbpasswd, config.dbport, config.dbname, sql, 'select', function(r){
         if(r[0].permissions){
@@ -44,7 +47,7 @@ switch (Number(req.query.case)) {
                 var e = [];
                 for (var u = 0; u < x.length; u++) {
                     if (b[i]==get(x[u])) {
-                        e.push(x[u])
+                        e.push(x[u]);
                         a[b[i]]=e;
                     }
                 }
@@ -53,7 +56,7 @@ switch (Number(req.query.case)) {
        }else{
             var f = JSON.parse(fs.readFileSync(__dirname + '/../menu/menu.json'));
             res.json(f);
-        };
+       }
     });
         break;
     case 2:
@@ -67,13 +70,13 @@ switch (Number(req.query.case)) {
         });
         break;
     case 3:
-        let agent_sql = 'select DISTINCT AGENT from t_game_config_variable_copy';
+        let agent_sql = 'select DISTINCT AGENT from ' + game_config;
         cmdlib.run_sql(config.ser_dbip, config.ser_dbuser, config.ser_dbpasswd, config.ser_dbport, config.ser_dbname, agent_sql, 'select', function(r) {
            res.json(r);
         });
         break;
     case 4:
-        let ser_sql = 'select game_zone_id, GAME_SITE,GAME_HOST,SITE_NAME,AGENT,BIN_DIR,SEVER_STATE from t_game_config_variable_copy where AGENT in (' + req.query.agent + ')';
+        let ser_sql = 'select game_zone_id, GAME_SITE,GAME_HOST,SITE_NAME,AGENT,BIN_DIR,SEVER_STATE from ' + game_config +' where AGENT in (' + req.query.agent + ')';
         cmdlib.run_sql(config.ser_dbip, config.ser_dbuser, config.ser_dbpasswd, config.ser_dbport, config.ser_dbname, ser_sql, 'select', function(r) {
             res.json(r);
         });
@@ -88,15 +91,27 @@ switch (Number(req.query.case)) {
         res.json(JSON.parse(fs.readFileSync(__dirname + '/../lang/' + lanfile )));
         break;
     case 7:
-        let zone_sql = 'select game_zone_id,game_site,bin_dir,hot_bin_dir,game_host,game_port,web_port,actcode_port,open_server_date from t_game_config_variable_copy';
+        let zone_sql = 'select game_zone_id,game_site,bin_dir,hot_bin_dir,game_host,game_port,web_port,actcode_port,open_server_date from ' + game_config;
         cmdlib.run_sql(config.ser_dbip, config.ser_dbuser, config.ser_dbpasswd, config.ser_dbport, config.ser_dbname, zone_sql, 'select', function(r) {
             res.json(r);
             console.log(r);
         });
         break;
     case 8:
-        let agentinfo_sql = 'select agent,login_key,charge_key,default_login_key from t_game_config_constant';
+        let agentinfo_sql = 'select agent,login_key,charge_key,charge_ip,default_login_key from t_game_config_constant';
         cmdlib.run_sql(config.ser_dbip, config.ser_dbuser, config.ser_dbpasswd, config.ser_dbport, config.ser_dbname, agentinfo_sql, 'select', function(r) {
+            res.json(r);
+        });
+        break;
+    case 9:
+        let baseinfo_sql = 'select game_zone_id,site_name,db_base_name from ' + game_config;
+        cmdlib.run_sql(config.ser_dbip, config.ser_dbuser, config.ser_dbpasswd, config.ser_dbport, config.ser_dbname, baseinfo_sql, 'select', function(r) {
+            res.json(r);
+        });
+        break;
+    case 10:
+        let client_info = 'select game_zone_id,game_site,assets from ' + game_config + ' where AGENT in (' + req.query.agent + ')';
+        cmdlib.run_sql(config.ser_dbip, config.ser_dbuser, config.ser_dbpasswd, config.ser_dbport, config.ser_dbname, client_info, 'select', function(r) {
             res.json(r);
         });
         break;

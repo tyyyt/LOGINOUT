@@ -1,6 +1,6 @@
 /**
- * cop server_stop/start
- * @authors Orz
+ * cop server_stop/start(开启/关闭服务器);
+ * @authors jkk
  */
  $.ajaxSettings.async = false;
  var AjaxData;
@@ -43,20 +43,23 @@ var Server = React.createClass({
         }
     },
     stop: function() {
-        var chk_value = [];
+        var dir = [];
+        var host = [];
         $('input[name="gamesrv"]:checked').each(function() {
-            chk_value.push($(this).val());
+            host.push($(this).val());
+            dir.push($(this).attr('title'));
         });
-        if(chk_value.length == 0 ){
-          $('#opMsg').text('请选择服务器！');
-          $('#fos').modal('show');
+        if(dir.length == 0 || host.length == 0){
+            $('#opMsg').text('请选择服务器！');
+            $('#fos').modal('show');
         }else{
           $.post('/cmd', {
                _cmd: 8,
                mod: 'stop',
-               server: chk_value.join(',')
+              host:host.join(','),
+              dir:dir.join(',')
                 }, function(data, status) {
-                    if(data.status=="yes"){
+                    if(data.status=="ok"){
                         $('#delu').modal('hide');
                         $('#opMsg').text('关闭服务器成功');
                         $('#fos').modal('show');
@@ -75,20 +78,23 @@ var Server = React.createClass({
         this.setState({userdata: $.getJSON(getData('3'))});
     },
     start: function() {
-      var chk_value = [];
+      var dir = [];
+      var host = [];
       $('input[name="gamesrv"]:checked').each(function() {
-          chk_value.push($(this).val());
+          host.push($(this).val());
+          dir.push($(this).attr('title'));
       });
-      if(chk_value.length == 0 ){
+      if(dir.length == 0 || host.length == 0){
         $('#opMsg').text('请选择服务器！');
         $('#fos').modal('show');
       }else{
         $.post('/cmd',{
           _cmd: 8,
-          mod:'start',
-          server: chk_value.join(',')
+          mod: 'start',
+          host:host.join(','),
+          dir:dir.join(',')
               }, function(data, status) {
-                  if(data.status=="yes"){
+                  if(data.status=="ok"){
                       $('#delu').modal('hide');
                       $('#opMsg').text('关闭服务器成功');
                       $('#fos').modal('show');
@@ -128,7 +134,7 @@ var Server = React.createClass({
                 var ServerSelectPage = this.state.serverdata.map(function(data){
                   return(
                     <div className="col-md-4 col-sm-6 col-xs-12">
-                      <input type="checkbox" name="gamesrv" title={data.BIN_DIR} value={data.GAME_SITE}/>
+                      <input type="checkbox" name="gamesrv" title={data.BIN_DIR} value={data.GAME_HOST}/>
                       <span>
                         {data.SITE_NAME}[{data.GAME_SITE}]
                       </span>

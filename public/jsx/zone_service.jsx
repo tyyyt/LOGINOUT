@@ -1,18 +1,18 @@
 /**
- * cop user
- * @authors Orz
+ * cop server management(区服信息管理)
+ * @authors Orz&jkk
  */
 
 // ajax sync
 $.ajaxSettings.async = false;
 var res;
 
-var User = React.createClass({
+var Zoneserver = React.createClass({
     getInitialState: function() {
         return {
-            userloading: true,
-            usererror: null,
-            userdata: null,
+            zoneloading: true,
+            zoneerror: null,
+            zonedata: null,
             langloading: true,
             langerror: null,
             langdata: null
@@ -21,7 +21,7 @@ var User = React.createClass({
 
     componentDidMount() {
         this.props.langpackage.then(value => this.setState({langloading: false, langdata: value}), error => this.setState({langloading: false, langerror: error}));
-        this.props.zonepage.then(value => this.setState({userloading: false, userdata: value}), error => this.setState({userloading: false, usererror: error}));
+        this.props.zonepage.then(value => this.setState({zoneloading: false, zonedata: value}), error => this.setState({zoneloading: false, zoneerror: error}));
     },
     ShowAddUser: function() {
         $('#addu').modal('show');
@@ -123,7 +123,7 @@ var User = React.createClass({
         $.getJSON(getData('7'), function(result) {
             res = result;
         });
-        this.setState({userdata: res});
+        this.setState({zonedata: res});
     },
 
     ChanInfo: function() {
@@ -172,7 +172,7 @@ var User = React.createClass({
         $.getJSON(getData('7'), function(result) {
             res = result;
         });
-        this.setState({userdata: res});
+        this.setState({zonedata: res});
     },
     CopyInfo: function() {
         $("#ccopy_zone").modal('hide');
@@ -221,12 +221,12 @@ var User = React.createClass({
         $.getJSON(getData('7'), function(result) {
             res = result;
         });
-        this.setState({userdata: res});
+        this.setState({zonedata: res});
     },
     render: function() {
-        if (this.state.userloading || this.state.langloading) {
+        if (this.state.zoneloading || this.state.langloading) {
             return (<img src="/images/show_loading.gif" alt="Loading Menu" className="img-responsive img-rounded center-block"/>);
-        } else if (this.state.usererror !== null) {
+        } else if (this.state.zoneerror !== null) {
             return (
                 <span>Error: {this.state.usererror}</span>
             );
@@ -235,7 +235,7 @@ var User = React.createClass({
                 <span>Error: {this.state.langerror}</span>
             );
         } else {
-            var repos = this.state.userdata;
+            var repos = this.state.zonedata;
             var o = this;
             var zonepage = repos.map(function(repo) {
                 return (
@@ -244,9 +244,9 @@ var User = React.createClass({
                         <td>{repo.game_site}</td>
                         <td>{formattime(repo.open_server_date)}</td>
                         <td>{repo.game_host}</td>
-                        <td><input type="button" name="zone"  id={repo.game_zone_id}  onClick={o.showdel.bind(null,repo.game_zone_id)} value="删除"/>
-                            <input type="button" name="zone"  id={repo.game_zone_id}  onClick={o.showchanzone.bind(null,repo.game_zone_id)} value="修改"/>
-                            <input type="button" name="zone"  id={repo.game_zone_id}  onClick={o.showcopyzone.bind(null,repo.game_zone_id)} value="复制新增"/></td>
+                        <td><input type="button" className="btn btn-danger"  name="zone"  id={repo.game_zone_id}  onClick={o.showdel.bind(null,repo.game_zone_id)} value="删除"/>
+                            <input type="button" className="btn btn btn-warning" name="zone"  id={repo.game_zone_id}  onClick={o.showchanzone.bind(null,repo.game_zone_id)} value="修改"/>
+                            <input type="button" className="btn btn-default" name="zone"  id={repo.game_zone_id}  onClick={o.showcopyzone.bind(null,repo.game_zone_id)} value="复制新增"/></td>
                     </tr>
                 );
             });
@@ -417,4 +417,4 @@ function formattime(time){
     return time;
 }
 ReactDOM.render(
-    <User zonepage={$.getJSON(getData('7'))} langpackage={$.getJSON(getData('6'))}/>, document.getElementById('show'));
+    <Zoneserver zonepage={$.getJSON(getData('7'))} langpackage={$.getJSON(getData('6'))}/>, document.getElementById('show'));

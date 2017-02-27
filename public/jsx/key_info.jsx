@@ -1,19 +1,19 @@
 /**
- * cop user
- * @authors Orz
+ * cop the page of key information(key信息管理)
+ * @authors Orz&jkk
  */
 
  // ajax sync
 $.ajaxSettings.async = false;
 var res;
 
-var User = React.createClass({
+var Keyinfo = React.createClass({
     getInitialState: function() {
-        return {userloading: true, usererror: null, userdata: null};
+        return {keyloading: true, keyerror: null, keydata: null};
     },
 
     componentDidMount() {
-        this.props.userpage.then(value => this.setState({userloading: false, userdata: value}), error => this.setState({userloading: false, usererror: error}));
+        this.props.keypage.then(value => this.setState({keyloading: false, keydata: value}), error => this.setState({keyloading: false, keyerror: error}));
     },
 
     showkey: function() {
@@ -67,20 +67,20 @@ var User = React.createClass({
       $.getJSON(getData('2'), function(result){
         res = result;
       });
-      this.setState({userdata: res});
+      this.setState({keydata: res});
     },
 
     render: function() {
-        if (this.state.userloading) {
+        if (this.state.keyloading) {
             return (
                 <img src="/images/show_loading.gif" alt="Loading Menu" className="img-responsive img-rounded center-block"/>
             );
-        } else if (this.state.usererror !== null) {
+        } else if (this.state.keyerror !== null) {
             return (
                 <span>Error:error</span>
             );
         } else {
-            var repos = this.state.userdata.users;
+            var repos = this.state.keydata.users;
             var userpage = repos.map(function(repo) {
                 return (
                     <tr key={repo.id}>
@@ -183,4 +183,4 @@ function getData(data) {
 }
 
 ReactDOM.render(
-    <User userpage={$.getJSON(getData('2'))} />, document.getElementById('show'));
+    <Keyinfo keypage={$.getJSON(getData('2'))} />, document.getElementById('show'));

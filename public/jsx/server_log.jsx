@@ -1,6 +1,6 @@
 /**
- * cop server_stop/start
- * @authors Orz
+ * cop the log of the server(服务器日志)
+ * @authors Orz&jkk
  */
  $.ajaxSettings.async = false;
  var AjaxData;
@@ -85,9 +85,8 @@ var Server = React.createClass({
         }else{
             $.post('/cmd', {
                 _cmd: 19,
-                path: logpath,
                 host: host,
-                log: logname,
+                log: logpath + 'log/'+logname,
                 start:start,
                 stop:stop
             }, function(data, status) {
@@ -95,7 +94,7 @@ var Server = React.createClass({
                     $('#opMsg').text('服务器连接失败');
                     $('#fos').modal('show');
                 }else {
-                    $('#serverlog').text(data);
+                    $('#serverlog').text(data.status);
                     $('#showlog').modal('show');
                 }
             }).error(function(){
@@ -142,10 +141,10 @@ var Server = React.createClass({
                 var t = this;
                 var Serverlogdata = this.state.logdata.map(function(data){
                     return(
-                        <div className="col-md-12 col-sm-12 col-xs-12">
-                            {data} <input type="number" min={0} style={{width:'80px',height:"30px"}} id={"start" + data} placeholder="起始行"/>
-                            <input type="number" min={0} style={{width:'80px',height:"30px"}} id={"stop" + data} placeholder="终止行"/>
-                             <input type="button" name="gamelog"  value="查看日志" onClick={t.logcontent.bind(data,data)}/>
+                        <div className="col-md-12 col-sm-12 col-xs-12" key={data}>
+                            {data} <input  type="number" min={0} style={{width:'80px',height:"30px"}} id={"start" + data} placeholder="起始行"/>
+                            <input  type="number" min={0} style={{width:'80px',height:"30px"}} id={"stop" + data} placeholder="终止行"/>
+                             <input className="btn btn-info" type="button" name="gamelog"  value="查看日志"  style={{position:'absolute',right:"20px"}} onClick={t.logcontent.bind(data,data)}/>
                         </div>
                     );
                 });
@@ -212,7 +211,7 @@ var Server = React.createClass({
                                     <div>{Serverlogdata}</div>
                                 </div>
                                 <div className="modal-footer">
-                                    <button type="button" className="btn btn-default" data-dismiss="modal">关闭</button>
+                                    <button type="button" className="btn btn-default center-block" data-dismiss="modal">关闭</button>
                                 </div>
                             </div>
                         </div>

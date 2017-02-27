@@ -63,9 +63,9 @@ cmdlib.run_sql(config.dbip, config.dbuser, config.dbpasswd, config.dbport, confi
     if (r.length == 0) {
         res.json({'logstatus': 'no'});
     } else {
-        var per = (r[0].permissions);
         req.session.showname = r[0].showname;
         req.session.user = user;
+        console.log(req.session.user);
         req.session.lan = lan;
         res.json({'logstatus': 'yes'});
     }

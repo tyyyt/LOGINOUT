@@ -1,13 +1,13 @@
 /**
- * cop the entry of server(入口管理)
- * @authors Orz
+ * cop Server status(服务器状态)
+ * @authors Orz&jkk
  */
 
 // ajax sync
 $.ajaxSettings.async = false;
 var AjaxData;
 
-var Entrance = React.createClass({
+var Status = React.createClass({
     getInitialState: function() {
         return {
             entranceloading: true,
@@ -15,11 +15,12 @@ var Entrance = React.createClass({
             entrancedata: null,
             entranceagent: null,
             entrancebtn: 'hide',
+            statdata:null,
             entrancestate: {
                 "text": [
-                    "测试状态", "正常状态", "维护状态", "关闭状态"
+                    "未知状态", "正常状态"
                 ],
-                "class": ["label-info", "label-success", "label-warning", "label-danger"]
+                "class": ["label-danger", "label-success"]
             }
         }
     },
@@ -27,7 +28,6 @@ var Entrance = React.createClass({
     componentDidMount() {
         this.props.enpage.then(value => this.setState({entranceloading: false, entranceagent: value}), error => this.setState({entranceloading: false, entranceerror: error}));
     },
-
     selectAgent: function() {
         var checkboxs = document.getElementsByName('agent');
         for (var i = 0; i < checkboxs.length; i++) {
@@ -35,7 +35,13 @@ var Entrance = React.createClass({
             e.checked = !e.checked;
         }
     },
-
+    selectserver: function() {
+        var checkboxs = document.getElementsByName('gamesrv');
+        for (var i = 0; i < checkboxs.length; i++) {
+            var e = checkboxs[i];
+            e.checked = !e.checked;
+        }
+    },
     selectSrv: function() {
         var checkboxs = document.getElementsByName('gamesrv');
         for (var i = 0; i < checkboxs.length; i++) {
@@ -53,6 +59,7 @@ var Entrance = React.createClass({
           $.getJSON(getData('4'),'agent=' + chk_value.join(','), function(result) {
               AjaxData = result;
           });
+          console.log(AjaxData);
           this.setState({entrancedata: AjaxData, entrancebtn: ''});
         }else {
           $('#opMsg').text('请选择平台！');
@@ -65,36 +72,27 @@ var Entrance = React.createClass({
         $('input[name="gamesrv"]:checked').each(function() {
             chk_value.push($(this).val());
         });
+        console.log(chk_value);
         if (chk_value.length > 0) {
           $.post("/cmd", {
-              _cmd: 6,
-              zoneid: chk_value.join(','),
-              state: $("#mods").val()
+              _cmd: 20,
+              gameid: chk_value.join(',')
               }, function(data, status) {
-                  if(data.status=="yes"){
-                      $('#opMsg').text('操作成功');
+                  if(data.status == "err"){
+                      $('#opMsg').text('查询失败');
                       $('#fos').modal('show');
                   }else {
-                      $('#opMsg').text('操作失败：[ERROR]:' + data.deluser);
-                      $('#fos').modal('show');
+                      AjaxData = data.status;
                   }
             }).error(function(){
                   $('#opMsg').text('请求时间超时');
                   $('#fos').modal('show');
           });
-          var chk_value = [];
-          $('input[name="agent"]:checked').each(function() {
-              chk_value.push('"' + $(this).val() + '"');
-          });
-          $.getJSON(getData('4'),'agent=' + chk_value.join(','), function(result) {
-              AjaxData = result;
-          });
-          this.setState({entrancedata: AjaxData, entrancebtn: ''});
+        this.setState({statdata: AjaxData});
         } else {
           $('#opMsg').text('请选择服务器！');
           $('#fos').modal('show');
         }
-
     },
 
     render: function() {
@@ -106,10 +104,9 @@ var Entrance = React.createClass({
             );
         } else {
             var Agent = this.state.entranceagent;
-            var State = this.state.entrancestate;
             var AgentPage = Agent.map(function(repo) {
                 return (
-                    <div className="col-md-4 col-xs-12 col-sm-6">
+                    <div className="col-md-4 col-xs-12 col-sm-6" key={repo.AGENT}>
                         <input type="checkbox" name="agent" value={repo.AGENT}/> {repo.AGENT}
                     </div>
                 );
@@ -117,23 +114,40 @@ var Entrance = React.createClass({
             if (this.state.entrancedata == null) {
                 var ServerSelectPage;
             } else {
-                var ServerSelectPage = this.state.entrancedata.map(function(data){
-                  return(
-                    <div className="col-md-4 col-sm-6 col-xs-12">
-                      <input type="checkbox" name="gamesrv" value={data.game_zone_id}/>
-                      <span>
-                        {data.SITE_NAME}[{data.GAME_SITE}]
-                        <span className={'pull-right label ' + State.class[data.SEVER_STATE]}>{State.text[data.SEVER_STATE]}</span>
-                      </span>
-                    </div>
-                  );
-                });
+                if(this.state.statdata !== null){
+                    var ServerSelectPage = this.state.statdata.map(function(data){
+                        var s = JSON.parse(data);
+                        return(
+                            <tr key={s.repo}>
+                                <td><input type="checkbox" name="gamesrv" value={s.repo}/>{s.repo}</td>
+                                <td>{s.state.cpuRate}</td>
+                                <td>{s.state.useMemory/1024/1024}Mb</td>
+                                <td>{s.state.concurrent}</td>
+                                <td>{s.state.online}</td>
+                                <td>{s.state.mapCount}</td>
+                            </tr>
+                        );
+                    });
+                }else{
+                    var ServerSelectPage = this.state.entrancedata.map(function(data){
+                        return(
+                            <tr key={data.GAME_SITE}>
+                                <td><input type="checkbox" name="gamesrv" value={data.GAME_SITE}/>{data.GAME_SITE}</td>
+                                <td>?</td>
+                                <td>?</td>
+                                <td>?</td>
+                                <td>?</td>
+                                <td>?</td>
+                            </tr>
+                        );
+                    });
+                }
             }
             return (
                 <div className="container-fluid row">
                     <ol className="breadcrumb">
                         <li>服务器管理</li>
-                        <li className="active">入口管理</li>
+                        <li className="active">服务器状态</li>
                     </ol>
                     <div className="container-fluid">
                     {AgentPage}
@@ -145,25 +159,31 @@ var Entrance = React.createClass({
                         <button className="btn btn-primary" onClick={this.showSelectPage}>提交</button>
                     </div>
                     <hr className="col-md-12 col-sm-12 col-xs-12"/>
-                    <div className="container-fluid">
-                    {ServerSelectPage}
-                    </div>
+
+                    <table className={"table table-striped table-hover" + this.state.entrancebtn}>
+                        <thead className={this.state.entrancebtn}>
+                        <tr>
+                            <td>游戏标识</td>
+                            <td>CPU使用率</td>
+                            <td>内存</td>
+                            <td>并发数</td>
+                            <td>在线人数</td>
+                            <td>副本数</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {ServerSelectPage}
+                        </tbody>
+                    </table>
                     <hr className={'col-md-12 col-sm-12 col-xs-12 ' + this.state.entrancebtn}/>
                     <div className={'col-md-4 col-sm-3 col-xs-1 ' + this.state.entrancebtn}></div>
                     <div className={'col-md-2 col-sm-6 col-xs-10 ' + this.state.entrancebtn}>
-                      <select name="mods" id="mods" className="form-control" defaultValue="请选择状态">
-                        {/* <option>请选择状态</option> */}
-                        <option value="0">测试状态</option>
-                        <option value="1">正常状态</option>
-                        <option value="2">维护状态</option>
-                        <option value="3">关闭状态</option>
-                      </select>
                     </div>
                     <hr className={'col-md-12 col-sm-12 col-xs-12 ' + this.state.entrancebtn}/>
                     <div className={'col-md-4 col-sm-3 col-xs-1 ' + this.state.entrancebtn}></div>
                     <div className={'btn-group col-md-4 col-sm-6 col-xs-10 ' + this.state.entrancebtn}>
-                        <button className="btn btn-default" onClick={this.selectSrv}>全选／反选</button>
-                        <button className="btn btn-primary" onClick={this.sendMsg}>提交</button>
+                        <button className="btn btn-default" onClick={this.selectserver}>全选／反选</button>
+                        <button className="btn btn-primary" onClick={this.sendMsg}>查看</button>
                     </div>
                     {/* 成功OR失败 */}
                     <div className="modal fade" id="fos" tabIndex="-1" role="dialog" aria-labelledby="信息" aria-hidden="true">
@@ -204,4 +224,4 @@ function getData(data) {
 }
 
 ReactDOM.render(
-    <Entrance enpage={$.getJSON(getData('3'))}/>, document.getElementById('show'));
+    <Status enpage={$.getJSON(getData('3'))}/>, document.getElementById('show'));

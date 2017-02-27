@@ -1,5 +1,5 @@
 /**
- * cop server_stop/start
+ * cop run the shell command
  * @authors Orz
  */
  $.ajaxSettings.async = false;
